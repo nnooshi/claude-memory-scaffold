@@ -1,0 +1,45 @@
+{
+  "alwaysThinkingEnabled": true,
+  "effortLevel": "high",
+  "skipDangerousModePermissionPrompt": true,
+  "mode": "bypassPermissions",
+  "hooks": {
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -d memory/episodes ]; then echo 'memory/episodes/ exists — episodic capture available'; else echo 'NO_MEMORY_DIR'; fi"
+          },
+          {
+            "type": "agent",
+            "prompt": "Context is about to be compacted. Extract durable memories from this conversation.\n\nRules:\n1. Only extract if memory/episodes/ directory exists (check the PreCompact command output).\n2. If NO_MEMORY_DIR was returned, do nothing — reply NO_REPLY.\n3. For each memory worth saving, classify as: DECISION, FACT_LEARNED, CORRECTION, ACTION_ITEM, or PREFERENCE.\n4. Append to memory/episodes/YYYY-MM-DD.md (use today's date) with format:\n   ## HH:MM — [TAG]\n   One concise line describing what was learned/decided.\n5. If a CORRECTION updates an existing fact in memory/, update the source file directly.\n6. Be highly selective — most conversation is noise. Only save what would be valuable in a future session.\n7. If nothing worth saving, do nothing silently.",
+            "model": "haiku"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "agent",
+            "prompt": "Session ending. Check if memory/episodes/ directory exists.\n\nIf it does NOT exist, do nothing — reply NO_REPLY.\n\nIf it DOES exist:\n1. Review the conversation for any unsaved episodic memories not yet captured by PreCompact.\n2. Apply the same extraction rules: classify as DECISION, FACT_LEARNED, CORRECTION, ACTION_ITEM, PREFERENCE.\n3. Append to memory/episodes/YYYY-MM-DD.md with format: ## HH:MM — [TAG] followed by one concise line.\n4. If project state changed significantly, update memory/MEMORY.md current state section (if MEMORY.md exists).\n5. If a decision was made, append to memory/decisions.md (if it exists).\n6. Be selective — only save durable knowledge, not session chatter.",
+            "model": "haiku"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -d memory/episodes ]; then echo '--- Context was compacted. Recent episodic memory: ---'; cat memory/episodes/$(date +%Y-%m-%d).md 2>/dev/null || echo 'No episodes captured today yet.'; echo '---'; cat memory/episodes/$(date -v-1d +%Y-%m-%d 2>/dev/null || date -d 'yesterday' +%Y-%m-%d 2>/dev/null).md 2>/dev/null || true; fi"
+          }
+        ]
+      }
+    ]
+  }
+}
