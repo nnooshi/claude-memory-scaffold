@@ -63,6 +63,16 @@ cp "$SCRIPT_DIR/claude-init.sh" "$CLAUDE_DIR/templates/claude-init.sh"
 chmod +x "$CLAUDE_DIR/templates/claude-init.sh"
 echo "  Installed templates → ~/.claude/templates/"
 
+# --- Step 3b: Memory-aware skills → ~/.claude/skills/ ---
+if [ -d "$SCRIPT_DIR/templates/skills" ]; then
+    mkdir -p "$CLAUDE_DIR/skills"
+    for skill_dir in "$SCRIPT_DIR/templates/skills"/*/; do
+        skill_name=$(basename "$skill_dir")
+        cp -r "$skill_dir" "$CLAUDE_DIR/skills/$skill_name"
+        echo "  Installed skill: $skill_name → ~/.claude/skills/"
+    done
+fi
+
 # --- Step 4: claude-init in PATH ---
 mkdir -p "$HOME/bin"
 ln -sf "$CLAUDE_DIR/templates/claude-init.sh" "$HOME/bin/claude-init"
