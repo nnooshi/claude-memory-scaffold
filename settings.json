@@ -9,7 +9,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -d memory/episodes ]; then echo 'memory/episodes/ exists — episodic capture available'; else echo 'NO_MEMORY_DIR'; fi"
+            "command": "if [ -f CLAUDE.md ] && [ ! -d memory/episodes ]; then mkdir -p memory/episodes/archive && echo 'Auto-created memory/episodes/ (CLAUDE.md present)'; fi; if [ -d memory/episodes ]; then echo 'memory/episodes/ exists — episodic capture available'; else echo 'NO_MEMORY_DIR'; fi"
           },
           {
             "type": "agent",
