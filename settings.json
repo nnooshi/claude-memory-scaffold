@@ -23,6 +23,14 @@
     ],
     "SessionStart": [
       {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f memory/MEMORY.md ]; then echo '--- Memory Index ---'; cat memory/MEMORY.md; echo '---'; fi"
+          }
+        ]
+      },
+      {
         "matcher": "compact",
         "hooks": [
           {

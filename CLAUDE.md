@@ -32,7 +32,7 @@ Claude writes episodes manually. **Triggers:**
 - Decisions made (if any)
 - Facts discovered (if any)
 - Corrections (if any) — also fix the source file
-- Action items (if any)
+- Action items: `[OPEN] description` for pending, `[DONE] description` when resolving a prior item
 ```
 One bullet per item, one line each. Omit empty categories. Multiple sessions in one day append — never overwrite.
 
