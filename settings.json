@@ -9,7 +9,7 @@
           },
           {
             "type": "agent",
-            "prompt": "Context is about to be compacted. Extract durable memories from this conversation.\n\nRules:\n1. Only extract if memory/episodes/ directory exists (check the PreCompact command output).\n2. If NO_MEMORY_DIR was returned, do nothing — reply NO_REPLY.\n3. For each memory worth saving, classify as: DECISION, FACT_LEARNED, CORRECTION, ACTION_ITEM, or PREFERENCE.\n4. Append to memory/episodes/YYYY-MM-DD.md (use today's date) with format:\n   ## HH:MM — [TAG]\n   One concise line describing what was learned/decided.\n5. If a CORRECTION updates an existing fact in memory/, update the source file directly.\n6. Be highly selective — most conversation is noise. Only save what would be valuable in a future session.\n7. If nothing worth saving, do nothing silently.",
+            "prompt": "Context is about to be compacted. Write a session summary to memory/episodes/YYYY-MM-DD.md (use today's date).\n\nRules:\n1. If NO_MEMORY_DIR was returned by the command, do nothing — reply NO_REPLY.\n2. READ the existing memory/episodes/YYYY-MM-DD.md file first — it may already have entries from earlier today. You MUST preserve ALL existing content.\n3. Append a new section after any existing content:\n   ## HH:MM — Session Summary\n   - What was worked on\n   - Decisions made (if any)\n   - Facts discovered (if any)\n   - Corrections to existing knowledge (if any) — also update the source memory file directly\n   - Action items (if any)\n4. Keep each bullet to one concise line. Omit empty categories.\n5. If the session was trivial, one line is fine — but always write something.\n6. NEVER overwrite or discard existing entries.",
             "model": "haiku"
           }
         ]
@@ -25,7 +25,7 @@
           },
           {
             "type": "agent",
-            "prompt": "Session is ending (/new was called). Extract durable memories from this conversation before it is destroyed.\n\nRules:\n1. Only extract if memory/episodes/ directory exists (check the command output).\n2. If NO_MEMORY_DIR was returned, do nothing — reply NO_REPLY.\n3. For each memory worth saving, classify as: DECISION, FACT_LEARNED, CORRECTION, ACTION_ITEM, or PREFERENCE.\n4. Append to memory/episodes/YYYY-MM-DD.md (use today's date) with format:\n   ## HH:MM — [TAG]\n   One concise line describing what was learned/decided.\n5. If a CORRECTION updates an existing fact in memory/, update the source file directly.\n6. If project state changed, update memory/MEMORY.md current state section (if it exists).\n7. Be highly selective — only save what would be valuable in a future session.\n8. If nothing worth saving, do nothing silently.",
+            "prompt": "Session is ending (/clear was called). Write a session summary to memory/episodes/YYYY-MM-DD.md (use today's date) before this conversation is destroyed.\n\nRules:\n1. If NO_MEMORY_DIR was returned by the command, do nothing — reply NO_REPLY.\n2. READ the existing memory/episodes/YYYY-MM-DD.md file first — it may already have entries from earlier today. You MUST preserve ALL existing content.\n3. Append a new section after any existing content:\n   ## HH:MM — Session Summary\n   - What was worked on\n   - Decisions made (if any)\n   - Facts discovered (if any)\n   - Corrections to existing knowledge (if any) — also update the source memory file directly\n   - Action items (if any)\n   - Project state changes (if any) — also update memory/MEMORY.md if it exists\n4. Keep each bullet to one concise line. Omit empty categories.\n5. If the session was trivial, one line is fine — but always write something.\n6. NEVER overwrite or discard existing entries.",
             "model": "haiku"
           }
         ]
@@ -46,5 +46,6 @@
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true,
-  "mode": "bypassPermissions"
+  "mode": "bypassPermissions",
+  "model": "sonnet"
 }
