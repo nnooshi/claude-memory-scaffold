@@ -8,7 +8,7 @@ All projects use in-project memory. Never store memory in `~/.claude/projects/*/
 - **Project memory**: `./memory/` relative to the project's CLAUDE.md
 - **Auto-loaded**: `CLAUDE.md` (lean router) + `memory/MEMORY.md` (index, ~200 lines max)
 - **Demand-loaded**: All other `memory/*.md` files — read only when the topic comes up
-- **Episodic**: `memory/episodes/YYYY-MM-DD.md` — auto-maintained by hooks
+- **Episodic**: `memory/episodes/YYYY-MM-DD.md` — written by Claude at session end (see below)
 - **Never**: `~/.claude/projects/` — this is for session transcripts only, not memory
 
 ### Memory Discipline
@@ -16,12 +16,25 @@ All projects use in-project memory. Never store memory in `~/.claude/projects/*/
 2. **MEMORY.md is the index.** Max 200 lines. Contains: current state, active items, routing table to topic files.
 3. **One fact, one place.** Each piece of knowledge lives in ONE file. Everything else points to it.
 4. **Every memory file starts with**: `**Last updated:** YYYY-MM-DD` on line 2.
-5. **Always write something.** Even a trivial session gets a one-line summary. Haiku should never silently skip a session.
+5. **Always write something at session end.** Even a trivial session gets a one-liner.
 
 ### Episodic Memory
-Episodes are captured automatically by PreCompact and SessionEnd hooks. Each session appends a `## HH:MM — Session Summary` block to `memory/episodes/YYYY-MM-DD.md`. Multiple sessions in one day stack in the same file — never overwritten.
 
-**Note:** `/clear` triggers SessionEnd (captures). `/new` does NOT — prefer `/clear` to end sessions.
+Claude writes episodes manually. **Triggers:**
+- User says /clear, "wrap up", "save", "that's all", or similar
+- A significant task completes (deploy, decision made, document finished)
+- A CORRECTION is discovered — write immediately AND update the source file
+
+**How to write:** Read `memory/episodes/YYYY-MM-DD.md` first (preserve existing entries), then append:
+```
+## HH:MM — Session Summary
+- What was worked on
+- Decisions made (if any)
+- Facts discovered (if any)
+- Corrections (if any) — also fix the source file
+- Action items (if any)
+```
+One bullet per item, one line each. Omit empty categories. Multiple sessions in one day append — never overwrite.
 
 ### Weekly Consolidation
 When working in a project with 7+ days of episodes:

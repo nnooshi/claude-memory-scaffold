@@ -5,12 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -f CLAUDE.md ] && [ ! -d memory/episodes ]; then mkdir -p memory/episodes/archive && echo 'Auto-created memory/episodes/ (CLAUDE.md present)'; fi; if [ -d memory/episodes ]; then echo 'memory/episodes/ exists — episodic capture available'; else echo 'NO_MEMORY_DIR'; fi"
-          },
-          {
-            "type": "agent",
-            "prompt": "Context is about to be compacted. Write a session summary to memory/episodes/YYYY-MM-DD.md (use today's date).\n\nRules:\n1. If NO_MEMORY_DIR was returned by the command, do nothing — reply NO_REPLY.\n2. READ the existing memory/episodes/YYYY-MM-DD.md file first — it may already have entries from earlier today. You MUST preserve ALL existing content.\n3. Append a new section after any existing content:\n   ## HH:MM — Session Summary\n   - What was worked on\n   - Decisions made (if any)\n   - Facts discovered (if any)\n   - Corrections to existing knowledge (if any) — also update the source memory file directly\n   - Action items (if any)\n4. Keep each bullet to one concise line. Omit empty categories.\n5. If the session was trivial, one line is fine — but always write something.\n6. NEVER overwrite or discard existing entries.",
-            "model": "haiku"
+            "command": "if [ -f CLAUDE.md ] && [ ! -d memory/episodes ]; then mkdir -p memory/episodes/archive && echo 'Auto-created memory/episodes/ (CLAUDE.md present)'; fi; if [ -d memory/episodes ]; then echo 'memory/episodes/ exists'; else echo 'NO_MEMORY_DIR'; fi"
           }
         ]
       }
@@ -21,12 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -f CLAUDE.md ] && [ ! -d memory/episodes ]; then mkdir -p memory/episodes/archive; fi; if [ -d memory/episodes ]; then echo 'memory/episodes/ exists — episodic capture available'; else echo 'NO_MEMORY_DIR'; fi"
-          },
-          {
-            "type": "agent",
-            "prompt": "Session is ending (/clear was called). Write a session summary to memory/episodes/YYYY-MM-DD.md (use today's date) before this conversation is destroyed.\n\nRules:\n1. If NO_MEMORY_DIR was returned by the command, do nothing — reply NO_REPLY.\n2. READ the existing memory/episodes/YYYY-MM-DD.md file first — it may already have entries from earlier today. You MUST preserve ALL existing content.\n3. Append a new section after any existing content:\n   ## HH:MM — Session Summary\n   - What was worked on\n   - Decisions made (if any)\n   - Facts discovered (if any)\n   - Corrections to existing knowledge (if any) — also update the source memory file directly\n   - Action items (if any)\n   - Project state changes (if any) — also update memory/MEMORY.md if it exists\n4. Keep each bullet to one concise line. Omit empty categories.\n5. If the session was trivial, one line is fine — but always write something.\n6. NEVER overwrite or discard existing entries.",
-            "model": "haiku"
+            "command": "if [ -f CLAUDE.md ] && [ ! -d memory/episodes ]; then mkdir -p memory/episodes/archive; fi; if [ -d memory/episodes ]; then echo 'memory/episodes/ exists'; else echo 'NO_MEMORY_DIR'; fi"
           }
         ]
       }
@@ -37,7 +27,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -d memory/episodes ]; then echo '--- Context was compacted. Recent episodic memory: ---'; cat memory/episodes/$(date +%Y-%m-%d).md 2>/dev/null || echo 'No episodes captured today yet.'; echo '---'; cat memory/episodes/$(date -v-1d +%Y-%m-%d 2>/dev/null || date -d 'yesterday' +%Y-%m-%d 2>/dev/null).md 2>/dev/null || true; fi"
+            "command": "if [ -d memory/episodes ]; then echo '--- Episodic memory (post-compaction restore) ---'; cat memory/episodes/$(date +%Y-%m-%d).md 2>/dev/null || echo 'No episodes today yet.'; echo '---'; cat memory/episodes/$(date -v-1d +%Y-%m-%d 2>/dev/null || date -d 'yesterday' +%Y-%m-%d 2>/dev/null).md 2>/dev/null || true; fi"
           }
         ]
       }
