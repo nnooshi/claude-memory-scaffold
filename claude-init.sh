@@ -90,5 +90,5 @@ echo "  1. Edit CLAUDE.md — replace {{placeholders}} with project-specific con
 echo "  2. Edit memory/MEMORY.md — set initial state and routing table"
 echo "  3. Start a Claude Code session in this directory"
 echo ""
-echo "Hooks are global (in ~/.claude/settings.json) — episodic capture is automatic."
-echo "Episodes will appear in memory/episodes/YYYY-MM-DD.md as you work."
+echo "Hooks are global (in ~/.claude/settings.json) — MEMORY.md auto-loads at session start."
+echo "Write episodes manually: tell Claude 'save', 'wrap up', or 'that's all' at session end."
