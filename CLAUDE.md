@@ -16,15 +16,12 @@ All projects use in-project memory. Never store memory in `~/.claude/projects/*/
 2. **MEMORY.md is the index.** Max 200 lines. Contains: current state, active items, routing table to topic files.
 3. **One fact, one place.** Each piece of knowledge lives in ONE file. Everything else points to it.
 4. **Every memory file starts with**: `**Last updated:** YYYY-MM-DD` on line 2.
-5. **Be selective.** Not everything is worth remembering. Filter for durable knowledge.
+5. **Always write something.** Even a trivial session gets a one-line summary. Haiku should never silently skip a session.
 
 ### Episodic Memory
-Episodes are captured automatically by PreCompact and Stop hooks. Each entry is tagged:
-- `DECISION` — a choice was made
-- `FACT_LEARNED` — new information discovered
-- `CORRECTION` — existing memory was wrong, now fixed
-- `ACTION_ITEM` — something to do later
-- `PREFERENCE` — user workflow/style preference discovered
+Episodes are captured automatically by PreCompact and SessionEnd hooks. Each session appends a `## HH:MM — Session Summary` block to `memory/episodes/YYYY-MM-DD.md`. Multiple sessions in one day stack in the same file — never overwritten.
+
+**Note:** `/clear` triggers SessionEnd (captures). `/new` does NOT — prefer `/clear` to end sessions.
 
 ### Weekly Consolidation
 When working in a project with 7+ days of episodes:
