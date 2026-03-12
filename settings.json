@@ -1,8 +1,4 @@
 {
-  "alwaysThinkingEnabled": true,
-  "effortLevel": "high",
-  "skipDangerousModePermissionPrompt": true,
-  "mode": "bypassPermissions",
   "hooks": {
     "PreCompact": [
       {
@@ -19,12 +15,17 @@
         ]
       }
     ],
-    "Stop": [
+    "SessionEnd": [
       {
+        "matcher": "clear",
         "hooks": [
           {
+            "type": "command",
+            "command": "if [ -f CLAUDE.md ] && [ ! -d memory/episodes ]; then mkdir -p memory/episodes/archive; fi; if [ -d memory/episodes ]; then echo 'memory/episodes/ exists — episodic capture available'; else echo 'NO_MEMORY_DIR'; fi"
+          },
+          {
             "type": "agent",
-            "prompt": "Session ending. Check if memory/episodes/ directory exists.\n\nIf it does NOT exist, do nothing — reply NO_REPLY.\n\nIf it DOES exist:\n1. Review the conversation for any unsaved episodic memories not yet captured by PreCompact.\n2. Apply the same extraction rules: classify as DECISION, FACT_LEARNED, CORRECTION, ACTION_ITEM, PREFERENCE.\n3. Append to memory/episodes/YYYY-MM-DD.md with format: ## HH:MM — [TAG] followed by one concise line.\n4. If project state changed significantly, update memory/MEMORY.md current state section (if MEMORY.md exists).\n5. If a decision was made, append to memory/decisions.md (if it exists).\n6. Be selective — only save durable knowledge, not session chatter.",
+            "prompt": "Session is ending (/new was called). Extract durable memories from this conversation before it is destroyed.\n\nRules:\n1. Only extract if memory/episodes/ directory exists (check the command output).\n2. If NO_MEMORY_DIR was returned, do nothing — reply NO_REPLY.\n3. For each memory worth saving, classify as: DECISION, FACT_LEARNED, CORRECTION, ACTION_ITEM, or PREFERENCE.\n4. Append to memory/episodes/YYYY-MM-DD.md (use today's date) with format:\n   ## HH:MM — [TAG]\n   One concise line describing what was learned/decided.\n5. If a CORRECTION updates an existing fact in memory/, update the source file directly.\n6. If project state changed, update memory/MEMORY.md current state section (if it exists).\n7. Be highly selective — only save what would be valuable in a future session.\n8. If nothing worth saving, do nothing silently.",
             "model": "haiku"
           }
         ]
@@ -41,5 +42,9 @@
         ]
       }
     ]
-  }
+  },
+  "alwaysThinkingEnabled": true,
+  "effortLevel": "high",
+  "skipDangerousModePermissionPrompt": true,
+  "mode": "bypassPermissions"
 }
